@@ -7,14 +7,15 @@ Once that is completed, modify program to print "FizzBuzz" for numbers that are 
 */
 
 for (let x = 1; x <= 15; x++) {
-    if (x % 3 == 0 && x % 5 == 0) 
+    if (x % 3 == 0 && x % 5 == 0) {
         console.log("FizzBuzz");
-    else if (x % 3 == 0) 
+    } else if (x % 3 == 0) {
         console.log("Fizz");
-    else if (x % 5 == 0) 
+    } else if (x % 5 == 0) {
         console.log("Buzz");
-    else 
+    } else { 
         console.log(x);
+    }
 }
 
 // console.log(0 % 3 == 0)
