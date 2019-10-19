@@ -125,4 +125,124 @@ Arrays have an ".includes()" method that CHECKS whether a given value EXISTS in 
 The body of the loop in "tableFor()" figures out which box in the table each entry falls into by checking whether the entry contains the specific event it's interested in and whether the event happens alongside a squirrel incident. 
 
 The loop then adds 1 to the correct box in the table
+
+
+Array Loops
+
+In the tableFor() function, there's a loop like:
+    for (let i = 0; i < JOURNAL.length; i++) {
+        let entry = JOURNAL[i];
+        // do something with entry
+    }
+
+    * this loop is COMMON in classical JS:
+        - going over arrays 1 element at a time
+    
+
+Better way to write the loop above is:
+    for (let entry of JOURNAL) {
+        console.log(`${entry.events.length} events.`);
+    }
+
+    * when a for loop looks like this with the word "of" after a variable definition
+        - it will loop over the elements of the value given AFTER 'of'
+    * this also works for string and other data structures
 */
+
+
+// for (let entry of JOURNAL) {
+//     console.log(`${entry.squirrel}`)
+// }
+// // false
+// // false
+// // false
+
+
+/*
+The Final Analysis
+
+We need to compute a correlation for every TYPE of event that occurs in the data set
+
+To do so
+    1st need to find every type of event
+*/
+
+
+function journalEvents(journal) {
+    let events = [];
+    // for every entry of the journal
+    for (let entry of journal) {
+        // for every event in the entry's events
+        for (let event of entry.events) {
+            // if events array does NOT have the event
+            if (!events.includes(event)) {
+                // append the event
+                events.push(event);
+            }
+        }
+    }
+    return events;
+}
+
+console.log(journalEvents(JOURNAL));
+// [ 'carrot',
+//   'exercise',
+//   'weekend',
+//   'bread',
+//   ...
+// ]
+
+
+/*
+By going over ALL the events and adding those that are NOT already in there to the 'events'' array, the function collections every type of event
+
+Using that, we can see all the correlations
+*/
+
+function phi(table) {
+    return (table[3] * table[0] - table[2] * table[1]) / 
+    Math.sqrt((table[2] + table[3]) * 
+              (table[0] + table[1]) * 
+              (table[1] + table[3]) * 
+              (table[0] + table[2]));
+}
+
+
+// for (let event of journalEvents(JOURNAL)) {
+//     console.log(event + ":", phi(tableFor(event, JOURNAL)));
+// }
+// // carrot: 0.014097096860865023
+// // exercise: 0.06859943405700354
+// // weekend: 0.13719886811400708
+// // bread: -0.07575540190785703
+
+
+/*
+Most correlations seem to lie close to 0
+
+Let's filter the results to show only correlations that are > 0.1 or < -0.1
+*/
+
+for (let event of journalEvents(JOURNAL)) {
+    let correlation = phi(tableFor(event, JOURNAL));
+    if (correlation > 0.1 || correlation < -0.1) {
+        console.log(event + ":" + correlation);
+    }
+}
+// weekend:0.13719886811400708
+// brushed teeth:-0.3805211953235953
+// candy:0.12964074471043288
+// work:-0.13719886811400708
+// spaghetti:0.242535625036333
+// reading:0.11068280537595927
+// peanuts:0.59026798116852
+
+
+for (let entry of JOURNAL) {
+    if (entry.events.includes("peanuts") && !entry.events.includes("brushed teeth")) {
+        entry.events.push("peanut teeth");
+    }
+}
+
+console.log(phi(tableFor("peanut teeth", JOURNAL)))
+// 1

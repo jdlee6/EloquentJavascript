@@ -307,10 +307,10 @@ Jacques Example continued
 */
 
 
-let journal = [];
-function addEntry(events, squirrel) {
-    journal.push({events, squirrel});
-}
+// let journal = [];
+// function addEntry(events, squirrel) {
+//     journal.push({events, squirrel});
+// }
 
 
 /*
@@ -320,23 +320,23 @@ Instead of DECLARING properties like events: events, it just gives a property na
 */
 
 
-addEntry(["work", "touched tree", "pizza", "running", "television"], false);
-addEntry(["work", "ice cream", "cauliflower", "lasagna","touched tree", "brushed teeth"], false);
-addEntry(["weekend", "cycling", "break", "peanuts", "beer"], true);
+// addEntry(["work", "touched tree", "pizza", "running", "television"], false);
+// addEntry(["work", "ice cream", "cauliflower", "lasagna","touched tree", "brushed teeth"], false);
+// addEntry(["weekend", "cycling", "break", "peanuts", "beer"], true);
 
-console.log(journal);
-// [ { events: [ 'work', 'touched tree', 'pizza', 'running', 'television' ],
-//     squirrel: false },
-//   { events:
-//      [ 'work',
-//        'ice cream',
-//        'cauliflower',
-//        'lasagna',
-//        'touched tree',
-//        'brushed teeth' ],
-//     squirrel: false },
-//   { events: [ 'weekend', 'cycling', 'break', 'peanuts', 'beer' ],
-//     squirrel: true } ]
+// console.log(journal);
+// // [ { events: [ 'work', 'touched tree', 'pizza', 'running', 'television' ],
+// //     squirrel: false },
+// //   { events:
+// //      [ 'work',
+// //        'ice cream',
+// //        'cauliflower',
+// //        'lasagna',
+// //        'touched tree',
+// //        'brushed teeth' ],
+// //     squirrel: false },
+// //   { events: [ 'weekend', 'cycling', 'break', 'peanuts', 'beer' ],
+// //     squirrel: true } ]
 
 
 /*
@@ -364,16 +364,17 @@ Computing Correlation
     * Most simple option
 */
 
-function phi(table) {
-    return (table[3] * table[0] - table[2] * table[1]) / 
-    Math.sqrt((table[2] + table[3]) * 
-              (table[0] + table[1]) * 
-              (table[1] + table[3]) * 
-              (table[0] + table[2]));
-}
 
-console.log(phi([76,9,4,1]))
-// 0.06859943405700354
+// function phi(table) {
+//     return (table[3] * table[0] - table[2] * table[1]) / 
+//     Math.sqrt((table[2] + table[3]) * 
+//               (table[0] + table[1]) * 
+//               (table[1] + table[3]) * 
+//               (table[0] + table[2]));
+// }
+
+// console.log(phi([76,9,4,1]))
+// // 0.06859943405700354
 
 
 /*
@@ -382,7 +383,349 @@ The example above is a DIRECT translation of the 'phi' formula into JS
 * "Math.sqrt" is the square root function which is provided by the Math object in a standard JS environment
 
 ** Look at journal.js
+    - covers array loops
+    - implements phi() function for correlation
 
 
-Array Loops
+Further Arrayology
+
+* remember that ".push" and ".pop" methods were to add and remove elements at the END of the array
+
+* the methods for adding and removing elements at the START of the array are called ".unshift()" and ".shift()"
 */
+
+
+// let todoList = [];
+// function remember(task) {
+//     todoList.push(task);
+// }
+// function getTask() {
+//     return todoList.shift();
+// }
+// function rememberUrgently(task) {
+//     todoList.unshift(task);
+// }
+
+// remember('take out garbage');
+// remember('clean dishes');
+// console.log(todoList);
+// // [ 'take out garbage', 'clean dishes' ]
+
+// // .shift() REMOVES the 1st element of the array
+// console.log(getTask());
+// // take out garbage
+
+// // .unshift() ADDS the task as the 1st element of the array
+// rememberUrgently('fold clothes');
+// console.log(todoList);
+// // [ 'fold clothes', 'clean dishes' ]
+
+
+/*
+The program aboves manages a queue of tasks
+    - you can add tasks to the end of the queue by calling 'remember('task')' which uses .push()
+    - you can remove the 1st item from the queue with 'getTask()' which uses .shift()
+    - you can add a task as the 1st item in the queue with '.unshift()'
+
+To search for a specific value, arrays provide an .indexOf() method
+    - searches through the array from START to END and return the INDEX at which the requesed value was found 
+        * if NOT found it returns -1
+
+    - to search from the end instead of the start, you can use .lastIndexOf() method
+*/
+
+
+// let nums = [1,2,7,3,2];
+
+// console.log(nums.indexOf(2));
+// // 1
+// console.log(nums.lastIndexOf(2));
+// // 4
+
+
+/*
+Both .indexOf() and .lastIndexOf() take an OPTIONAL 2nd argument that indicates WHERE to START searching
+
+.slice() method takes a START and END indices and returns an array that has only the elements between them
+    * START index is INCLUSIVE
+    * END index is EXCLUSIVE
+*/
+
+
+// console.log(nums.slice(0,3));
+// // [ 1, 2, 7 ]
+
+// // when the END index is NOT given, 'slice' will take ALL of the elements AFTER the START index
+// console.log(nums.slice(1));
+// // [ 2, 7, 3, 2 ]
+
+// // You can also OMIT the START index to copy the entire array
+// console.log(nums.slice())
+// // [ 1, 2, 7, 3, 2 ]
+
+
+/*
+.concat() method can be used to GLUE arrays together to create a NEW array 
+    * similar to the '+' operators for STRINGS
+
+Example: shows both .concat() and .slice() in action
+    - takes an array and an index and it returns a new array that is a copy of the original array with the element at the given index removed
+*/
+
+
+// function remove(array, index) {
+//     return array.slice(0, index).concat(array.slice(index+1));
+// }
+
+// console.log(remove(['a','b','c','d','e'], 2));
+// // [ 'a', 'b', 'd', 'e' ]
+
+// // if .concat() receives an argument that is NOT an array, that value will be added to the NEW array as it were a 1-element array 
+// let alphabet = ["a","b","c","d","e"];
+// console.log(alphabet.slice(0,2).concat(1))
+// // [ 'a', 'b', 1 ]
+
+
+/*
+Strings and Their Properties
+
+.length() & .toUpperCase()
+
+Manually adding properties do NOT stick (look at the example below)
+*/
+
+
+// let kim = "Kim";
+// kim.age = 88;
+// console.log(kim.age);
+// // undefined
+
+
+/*
+Strings, Numbers, and Booleans, are NOT objects therefore does NOT store any properties
+    * these values are IMMUTABLE and CANNOT be changed
+
+String Built In Properties
+
+Arrays and Strings share the following properties:
+    .slice()
+    .indexOf()
+*/
+
+
+// let phrase = "Hello World";
+// console.log(phrase.slice(0,5));
+// // Hello
+// console.log(phrase.indexOf("W"));
+// // 6
+// console.log(phrase.indexOf("l"));
+// // 2
+
+// // searches from the last index to the first index
+// console.log(phrase.lastIndexOf("l"));
+// // 9
+
+
+/*
+the String's .indexOf() method can search for a string containing more than 1 character, whereas the corresponding 
+
+.trim() method REMOVES whitespaces (spaces, newlines, tabs, and similar characters) from the start and end of a string
+
+.padStart() takes the desired length and padding characters as arguments
+
+.split() can be used to split a string on every occurence of another string
+
+.join() can be used to join it again
+
+.repeat() method can be used to repeat the string
+
+.length() method is used to find the length
+
+string[index] retrieves the character at the index given
+*/
+
+
+// console.log(phrase.indexOf("llo"));
+// // 2
+// console.log("       yerrrr      ".trim());
+// // yerrrr
+// console.log(String(6).padStart(3, "0"));
+// // 006
+// console.log(phrase.split(" "));
+// // [ 'Hello', 'World' ]
+// console.log(phrase.split(" ").join("_"));
+// // Hello_World
+// console.log(phrase.repeat(2));
+// // Hello WorldHello World
+// console.log("Yo"[1]);
+// // o
+
+
+/*
+Rest Parameters
+
+Math.max() computes the maximum of ALL the arguments it is given
+
+ANY number of arguments can be represented with '...' in the parameters
+*/
+
+
+// function maxi(...numbers) {
+//     let result = -Infinity;
+//     for (let number of numbers) {
+//         if (number > result) result = number;
+//     }
+//     return result;
+// }
+
+// console.log(maxi(2,3,1,23,1));
+// // 23
+
+
+/*
+When such a function is called, the "rest parameter" is bound to an ARRAY containing all further arguments
+
+If there are other parameters before it, their values aren't part of that array
+
+When, as in 'max', it is the only parameter, it will hold ALL arguments
+
+You can use a similar '...' notation to CALL a function with an array of arguments
+    - this SPREADS out the array into the function call and passes its elements as SEPARATE arguments
+    * you can also include an array like that ALONG with other arguments
+        maxi(0, ...numbers, 2)
+*/
+
+
+// let numbers = [5,1,7];
+// console.log(maxi(...numbers));
+// // 7
+// console.log(maxi(numbers));
+// // -Infinity
+// console.log(maxi(0, ...numbers, 2));
+// // 7
+
+// // [] array nottation similarly allows '...' operator to spread another array into a new array
+// let words = ["never", "fully"];
+// console.log(["will", ...words, "understand"]);
+// // [ 'will', 'never', 'fully', 'understand' ]
+
+
+/*
+Math Object
+
+Math.max() - maximum
+Math.min() - minimum
+Math.sqrt() - square root
+
+Math object is used as a contianer to group related functionalities
+    - provides a 'namespace' so that all these functions and values do NOT have to be global bindings
+    * more names taken, the more likely you accidentally overwrite an existing binding
+
+Math.cos - cosine
+Math.sin - sine
+Math.tan - tangent
+
+Inverse:
+Math.acos, Math.asin, Math.atan 
+Math.PI - PI / 3.14....
+
+Math.random - returns a random number between 0 and 1
+Math.floor - rounds DOWN to the nearest whole number
+Math.ceil - rounds UP to the nearest whole number
+Maht.round - rounds to the nearest whole number
+Math.abs - takes the absolute value of the number
+
+
+* Old programming tradition to write names of CONSTANT values in ALL CAPS
+*/
+
+
+// function randomPointOnCircle(radius) {
+//     let angle = Math.random() * 2 * Math.PI;
+//     return {x: radius * Math.cos(angle),
+//             y: radius * Math.sin(angle)};
+// }
+
+// console.log(randomPointOnCircle(2));
+// // { x: -1.286131462459016, y: -1.5316219707463825 }
+
+// console.log(Math.floor(1.8131231));
+// // 1
+
+// // whole random number with Math.floor() on the result of Math.random()
+// // multiplying the random number by 10 gives us a number between 0 and 10 and Math.floor rounds down
+// console.log(Math.floor(Math.random()*10));
+// // 2
+
+
+/*
+Destructuring
+
+Recall the phi function that we made
+
+    function phi(table) {
+        return (table[3] * table[0] - table[2] * table[1]) /
+            Math.sqrt((table[2] + table[3]) *
+                (table[0] + table[1]) *
+                (table[1] + table[3]) *
+                (table[0] + table[2]));
+    }
+
+This function is awkward to read because we have binding pointing at our array but we'd rather have bindings for the ELEMENTS of the array like so:
+    let n00 = table[0]
+
+    function phi([n00, n01, n10, n11]) {
+        return (n11 * n00 - n10 * n01) /
+            Math.sqrt((n10 + n11) * (n00 + n01) *
+                      (n01 + n11) * (n00 + n10));
+    }
+
+* If you know the value you are binding is an array, you can use [] to "look inside" of the value and bind its contents
+
+* Similar trick works for objects using {} instead of []
+*/
+
+
+let name = {name: "Faraji"};
+console.log(name);
+// { name: 'Faraji' }
+let {age} = {name: "Faraji"};
+console.log(age);
+// undefined
+let {birthday} = {name:"Faraji", birthday:"May"};
+console.log(birthday);
+// May
+
+
+/*
+JSON
+
+Serialization format - JSON 
+    - JS Object Notation
+    * used as a data storage and communication format
+
+- All property names have to be surrounded by "" / double quotes
+    - ONLY simple data expressions are ALLOWED
+    * NO function calls, bindings, or anything that involve computation
+    ** Comments are NOT allowed in JSON
+
+Example: 
+    {
+    "squirrel": false,
+    "events": ["work", "touched tree", "pizza", "running"]
+    }
+
+JSON methods:
+    JSON.stringify - takes a JS value and returns a JSON encoded string
+    JSON.parse - takes a JSON encoded string and converts it to the value it encodes
+*/
+
+
+let string = JSON.stringify({squirrel: false, events: ["weekend"]});
+
+console.log(string);
+// {"squirrel":false,"events":["weekend"]}
+console.log(JSON.parse(string));
+// { squirrel: false, events: [ 'weekend' ] }
+console.log(JSON.parse(string).events);
+// ["weekend"]
