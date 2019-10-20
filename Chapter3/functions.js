@@ -547,7 +547,7 @@ function findSolution(target) {
         } else if (current > target) {
             return null;
         } else {
-        return find(current + 5, `(${history} + 5)`) ||  find(current * 3, `(${history} * 3)`);
+            return find(current + 5, `(${history} + 5)`) ||  find(current * 3, `(${history} * 3)`);
         }
     }
     return find(1, "1");
@@ -630,7 +630,7 @@ Practice:
 
 //  Extend this function so that we can add a pigs parameter as well
 
-function zeroPad(number, label) {
+function zeroPad(number) {
     let string = String(number);
     while (string.length < 3) {
         string = "0" + string;
@@ -639,9 +639,9 @@ function zeroPad(number, label) {
 }
 
 function printFarmInventory(cows, chickens, pigs) {
-    console.log(`${zeroPad(cows, 3)} Cows`);
-    console.log(`${zeroPad(chickens, 12)} Chickens`);
-    console.log(`${zeroPad(pigs, 133)} Pigs`);
+    console.log(`${zeroPad(cows)} Cows`);
+    console.log(`${zeroPad(chickens)} Chickens`);
+    console.log(`${zeroPad(pigs)} Pigs`);
 }
 
 printFarmInventory(3, 12, 133);
