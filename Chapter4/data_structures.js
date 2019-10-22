@@ -52,6 +52,10 @@ Almost ALL JS values have properties
     Example 2: 
         * if you know that the property you are interested in is CALLED 'color', you say 'value.color'
         * if you want to EXTRACT the property named by the value held in the binding 'i', you say value[i]
+        
+            let value = {color: 'blue'}
+            console.log(value.color)
+            console.log(value['col'+'or'])
 
 The elements in an array are stored as the array's properties, using NUMBERS as property names
     * can NOT use the '.' notation with numbers
@@ -146,7 +150,7 @@ Propeties whose names aren't valid binding names or valid numbers HAVE to be quo
 
 
 /*
-This means that BRACES or "{}" have 2 meaning in IS
+This means that BRACES or "{}" have 2 meaning in JS
     - at the START of a statement, they start a BLOCK of statements
     - in any other position, they describe an OBJECT
 
@@ -268,7 +272,7 @@ Example below
 // // equal operator UPDATES the existing key
 // object1.value = 15;
 
-// console.log(object1.value);
+// console.log(object2.value);
 // // 15
 // console.log(object3.value);
 // // 10
