@@ -56,14 +56,16 @@ function range(start, end, step = 1) {
 
 function sum(a) {
     let total = 0;
-    for (let i in a) {
-        total += a[i];
+    for (let i of a) {
+        total += i;
     };
     return total;
 }
 
+console.log(sum([1,2,3,4]));
+
 // console.log(sum(range(1,5)));
-// // 5 + 4 + 3 + 2 + 1
+// 5 + 4 + 3 + 2 + 1
 // // 15
 // console.log(sum(range(1,3)));
 // // 6

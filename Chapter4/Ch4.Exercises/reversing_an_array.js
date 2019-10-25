@@ -18,13 +18,24 @@ For this exercise, write 2 functions:
 let test = [1,2,3,4,5];
 let sample = ["A", "B", "C", "D"];
 
-function reverseArray(a) {
+// function reverseArray(a) {
+//     let arr = [];
+//     for (let index = 0; index <= a.length-1; index++) {
+//         arr.unshift(a[index]);
+//     }
+//     return arr;
+// }
+
+// or 
+
+function reverseArray(s) {
     let arr = [];
-    for (let index = 0; index <= a.length-1; index++) {
-        arr.unshift(a[index]);
+    for (let ele of s) {
+        arr.unshift(ele);
     }
     return arr;
 }
+
 console.log(reverseArray(test));
 // // [ 4, 3, 2, 1 ]
 console.log(reverseArray(sample));

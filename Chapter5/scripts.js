@@ -1236,10 +1236,10 @@ function characterCount(script) {
     }, 0);
 }
 
-// console.log(SCRIPTS.reduce((accumulator, currentValue) => {
-//     // console.log(characterCount(accumulator), characterCount(currentValue));
-//     return characterCount(accumulator) < characterCount(currentValue) ? currentValue : accumulator;
-// }));
+console.log(SCRIPTS.reduce((accumulator, currentValue) => {
+    // console.log(characterCount(accumulator), characterCount(currentValue));
+    return characterCount(accumulator) < characterCount(currentValue) ? currentValue : accumulator;
+}));
 
 
 /*
@@ -1369,4 +1369,167 @@ These 2 approaches (1 with higher order functions and the other without) are als
 
 Strings and Character Codes
 
+Let's write a program that will figure out what script a piece of text is using
+    Remember that each script has an array of character code ranges associated with it
+
+* Given a character code, we could use the function like below to find the corresponding script (if any):
 */
+
+
+function characterScript(code) {
+    for (let script of SCRIPTS) {
+        // uses some()
+        if (script.ranges.some(([from, to]) => {
+            return code >= from && code < to;
+        })) {
+            return script;
+        }
+    }
+    return null;
+}
+
+console.log(characterScript(121));
+// { name: 'Latin', ...}
+
+/*
+some() is another higher-order function
+    - takes a test function and tells you whether that function returns true for ANY of the elements in the array
+
+
+* How do we get the character codes in a string?
+    Recall that JS strings are encoded as a sequence of 16 bit numbers - these are called "code units"
+    
+    * UTF-16
+        - format used by JS strings
+        - describes most common characters using a single 16-bit code unit but uses a pair of 2 such units for others 
+
+
+Emojis
+    - obvious operations on JS strings like retrieving their LENGTH via .length() and accessing their content using SQUARE BRACKET/[] deal ONLY with code units
+*/
+
+
+// Two emoji characters, horse and shoe
+let horseShoe = "🐴👟";
+console.log(horseShoe.length);
+// → 4
+console.log(horseShoe[0]);
+// → � (Invalid half-character)
+console.log(horseShoe.charCodeAt(0));
+// → 55357 (Code of the half-character)
+console.log(horseShoe.codePointAt(0));
+// → 128052 (Actual code for horse emoji)
+
+
+/*
+Unicode String Methods:
+
+String.charCodeAt()
+    - returns a code unit, NOT a FULL character code
+String.codePointAt()
+    - returns a FULL unicode character
+
+* 'for/of' loop can also be used on strings
+* when you use it loop over a string, it gives you REAL characters, NOT code units
+*/
+
+
+let roseDragon = "🌹🐉";
+for (let char of roseDragon) {
+    console.log(char);
+}
+// 🌹
+// 🐉
+
+let word = "hello";
+for (let letter of word) {
+    console.log(letter);
+}
+// h
+// e
+// l
+// l
+// o
+
+
+/*
+Recognizing Text
+
+
+What we have so far (for/of):
+    1. characterScript() - finds which code belongs to which type of script
+    2. function a way to loop over characters in a string
+
+The next step is to COUNT the characters that belong to each script
+*/
+
+
+function countBy(items, groupName) {
+    let counts = [];
+    for (let item of items) {
+        let name = groupName(item);
+        // console.log(name); --> true; false
+        let known = counts.findIndex(c => c.name == name);
+        // console.log(known);
+        // if not in list, then it returns -1
+        if (known == -1) {
+            // creates {name, count} object if -1
+            counts.push({name, count: 1});
+        } else {
+            // if known != -1, then it increments the 'count'
+            // known is the index of counts
+            counts[known].count++;
+        }
+    }
+    return counts;
+}
+
+console.log(countBy([1, 2, 3, 4, 5], n => n > 2));
+// [ { name: false, count: 2 }, { name: true, count: 3 } ]
+
+
+/*
+Step by Step
+    1. 1 --> name = false --> known == -1 (not in list yet) --> pushes to count {name: false, count: 1}
+    2. 2 --> name = false --> known == 0 (index 0 of the list is name 'false') --> increment counter
+    3. 3 --> name = true --> known == -1 ({name: true...}) NOT in list --> pushes to count {name: true, count: 1}
+    4. 4 --> name = true --> known == 1 (index 1 of count list is name 'true') --> increment counter by 1
+    5. 5 --> name = true --> known == 1 (index 1 of count list is name 'true') --> increment counter by 1
+
+
+The countBy() expects a COLLECTION (anything we can loop over with 'for/of') and a FUNCTION that computes a group name for a given element
+    - 'groupName' function returns an array of objects, each of which names a group and tells you the number of elements that were found in that group
+
+.findIndex(<function>) [array method] 
+    * somewhat like indexOf() but INSTEAD of looking for a specific value, it finds the FIRST value for which the given FUNCTION returns true
+    * returns -1 when NO such element is found
+*/
+
+
+// .findIndex() 
+console.log([1,2,1,3,4].findIndex(n => n > 1));
+// .indexOf()
+console.log([1,2,1,3,4].indexOf(2));
+
+
+/*
+Using 'countBy()' we can write the function that tells us which scripts are used in a piece of text
+*/
+
+
+function textScripts(text) {
+    let scripts = countBy(text, char => {
+        let script = characterScript(char.codePointAt(0));
+        return script ? script.name : "none";
+    }).filter(({name}) => name != "none");
+
+    let total = scripts.reduce((n, {count}) => n + count, 0);
+    if (total == 0) return "No scripts found";
+
+    return scripts.map(({name, count}) => {
+        return `${Math.round(count * 100 / total)}% ${name}`;
+    }).join(", ");
+}
+
+console.log(textScripts('英国的狗说"woof", 俄罗斯的狗说"тяв"'));
+// 61% Han, 22% Latin, 17% Cyrillic
