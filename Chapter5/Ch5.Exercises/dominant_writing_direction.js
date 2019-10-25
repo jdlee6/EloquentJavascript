@@ -1,4 +1,3 @@
-// Generated from the Unicode 10 database and https://en.wikipedia.org/wiki/Script_(Unicode)
 
 var SCRIPTS = [
     {
@@ -1114,267 +1113,16 @@ var SCRIPTS = [
       link: "https://en.wikipedia.org/wiki/Mongolian_writing_systems#Horizontal_square_script"
     }
   ];
-  
-  // This makes sure the data is exported in node.js —
-  // `require('./path/to/scripts.js')` will get you the array.
-  if (typeof module != "undefined" && module.exports && (typeof window == "undefined" || window.exports != exports))
-    module.exports = SCRIPTS;
-  if (typeof global != "undefined" && !global.SCRIPTS)
-    global.SCRIPTS = SCRIPTS;
-
 
 /*
-Filtering Arrays
+Write a function that computes the dominant writing direction in a text
 
-To find scripts in the data set that are still in use, the function below might be helpful
-    It filters out the elements in an array that do NOT pass a test
+Recall that each script object has a 'direction' property that can be "ltr" (left to right), "rtl" (right to left), or "ttb" (top to bottom)
+
+The dominant direction is the direction of a majority of the characters that have a script associated with them.
+
+The characterScript and countBy functions will be useful
 */
-
-
-function filter(array, test) {
-    let passed = [];
-    for (let element of array) {
-        if (test(element)) {
-            passed.push(element)
-        }
-    }
-    return passed;
-}
-
-// console.log(filter(SCRIPTS, script => script.living));
-// console.log(SCRIPTS.filter(s => s.living));
-
-/*
-The function uses the argument named 'test', a function value, to fill a "gap" in the computation - the process of deciding which elements to collect
-
-* Rather than deleting elements from the existing arrays, the function is PURE and it does NOT modify the array it is given
-
-***.filter() is a standard array method
-    - the example above was designed to show what it does internally
-    * we will use it like this:
-        console.log(SCRIPTS.filter(s => s.living));
-
-
-Transforming with Map
-
-Say we have an array of objects representing scripts, produced by FILTERING the SCRIPTS array somehow
-    - we want an array of names, which is easier to inspect
-
-The .map() method transforms an array by APPLYING a function to ALL of its elements and building a new array from the returned values
-
-The new array will have the same length as the input array, but its content will have been 'mapped' to a new form by the function
-
-** Like 'forEach' and 'filter', 'map' is a standard array method
-*/
-
-
-function map(array, transform) {
-    let mapped = [];
-    for (let element of array) {
-        mapped.push(transform(element));
-    }
-    return mapped;
-}
-
-// let rtlScripts = SCRIPTS.filter(s => s.direction == 'rtl');
-// console.log(map(rtlScripts, s => s.name));
-// // function name(s) {
-// //     return s.name;
-// // }
-// // console.log(name(SCRIPTS[0]));
-
-// // proper way to use map
-// console.log(rtlScripts.map(s => s.name));
-
-
-/*
-Summarizing with Reduce
-
-Another common thing to do with arrays is to compute a single value from them
-    ie. Summing a collection of numbers
-    ie. Finding the script with the MOST characters
-
-.reduce() builds a value by repeatedly taking a single element from the array and COMBINING it with the CURRENT value
-    - when summing numbers, you'dstart with the number zero and for each element, add that to the sum
-
-The parameters to 'reduce' are, apart from the array, a COMBINING function and a START value
-    * this function is a bit trickier
-*/
-
-
-function reduce(array, combine, start) {
-    let current = start;
-    for (let element of array) {
-        current = combine(current, element);
-    }
-    return current;
-}
-
-// console.log(reduce([1,2,3,4], (a,b) => a + b, 0));
-// // 10
-// console.log(reduce([1,2,3,4], function(a,b) {
-//     return a + b;
-// }, 0))
-
-
-/*
-If your array contains at LEAST 1 element, you are allowed to leave off the 'start' argument
-    * the method will take the 1st element of the array as its start value and start REDUCING at the second element
-*/
-
-
-// console.log([1,2,3,4].reduce((a,b) => a + b))
-// // 10
-
-
-// To use .reduce() (TWICE) to find the script with the most characters
-function characterCount(script) {
-    // 'count' is the accumulator which is initialized to 0
-    // 'count' is added to the difference of the Unicode ranges 
-    return script.ranges.reduce((count, [from, to]) => {
-        return count + (to - from);
-    }, 0);
-}
-
-console.log(SCRIPTS.reduce((accumulator, currentValue) => {
-    // console.log(characterCount(accumulator), characterCount(currentValue));
-    return characterCount(accumulator) < characterCount(currentValue) ? currentValue : accumulator;
-}));
-
-
-/*
-The 'characterCount()' function REDUCES the ranges assigned to a script by SUMMING their sizes
-
-The 2nd call to reduce then uses this to find the LARGEST script by repeatedly comparing 2 scripts and returning the LARGER one
-    ** Boolean ? b : a
-        * if TRUE, then it returns 'currentValue' aka the MIDDLE value
-        * if FALSE, then it returns 'accumulator' aka the value on the RIGHT
-
-    ** This 2nd call reduces down to a single value by comparing the reduced ranges from character count
-        - returns whichever value is greater and then the current value is the next element on the list
-
-
-Composability
-
-Consider how we would have written the example above (finding the biggest script) WITHOUT higher order functions
-*/
-
-
-// let biggest = null;
-// for (let script of SCRIPTS) {
-//     // console.log(`${script.name} ${characterCount(script)}`);
-//     if (biggest == null || characterCount(biggest) < characterCount(script)) {
-//         biggest = script;
-//     }
-// }
-// console.log(biggest);
-
-
-/*
-There are a few more bindings, and the program is 4 lines longer but it is still very READABLE
-
-Higher Order functions start to shine when you need to COMPOSE operations
-
-Example: Let's write code that finds the average year of origin for living and dead scripts in the data set
-*/
-
-
-// let test = [1,2,3,4];
-// console.log(average(test));
-// // 2.5
-
-
-function average(array) {
-    // it adds up ALL elements to the accumulator BEFORE dividing by the length of the array
-    return array.reduce((accumulator, currentValue) => accumulator + currentValue) / array.length;
-}
-
-
-// Average of the years of living Scripts
-console.log(Math.round(average(SCRIPTS.filter(s => s.living).map(s => s.year))));
-// 1165
-
-// STEP BY STEP BREAKDOWN
-// 1st filters the entries where the script.living = True
-let living = SCRIPTS.filter(function living(s) {
-    return s.living;
-})
-console.log(living);
-// [ { name: 'Adlam',
-//     ranges: [ [Array], [Array], [Array] ],
-//     direction: 'rtl',
-//     year: 1987,
-//     living: true,
-//     link:
-//      'https://en.wikipedia.org/wiki/Fula_alphabets#Adlam_alphabet' },
-//   { name: 'Arabic',
-
-// 2nd transforms 'living' array to only output the year of the living script
-let living_year = living.map(function year(s) {
-    return s.year;
-});
-console.log(living_year);
-// [ 1987,
-//     400,
-//     405,
-//     1000,
-//     1896,
-
-let average_living_year = average(living_year);
-console.log(average_living_year);
-// 1165.0722891566265
-
-let rounded_average_living_year = Math.round(average_living_year);
-console.log(rounded_average_living_year);
-// 1165
-
-// Average year of dead scripts
-console.log(Math.round(average(SCRIPTS.filter(s => !s.living).map(s => s.year))));
-// 204
-
-
-/*
-Pipeline:
-    1. start with ALL scripts
-    2. filter out the LIVING or DEAD ones
-    3. take the YEARS from those
-    4. AVERAGE them
-    5. ROUND the result
-
-If you were to write this in 1 big loop you can do the following
-*/
-
-
-let total = 0, count = 0;
-for (let script of SCRIPTS) {
-    if (script.living) {
-        total += script.year;
-        count += 1;
-    }
-}
-
-console.log(Math.round(total/count));
-// 1165
-
-
-/*
-This is HARDER to see what was being computed and how
-    * intermediate results are NOT represented as coherent values
-
-These 2 approaches (1 with higher order functions and the other without) are also quite different
-    * the 1st will build up NEW arrays when running 'filter' and 'map' 
-    * the 2nd computes only numbers, doing less work
-        * when computing HUGE arrays, the LESS abstract style might be worth the extra speed
-
-
-Strings and Character Codes
-
-Let's write a program that will figure out what script a piece of text is using
-    Remember that each script has an array of character code ranges associated with it
-
-* Given a character code, we could use the function like below to find the corresponding script (if any):
-*/
-
 
 function characterScript(code) {
     for (let script of SCRIPTS) {
@@ -1387,82 +1135,6 @@ function characterScript(code) {
     }
     return null;
 }
-
-console.log(characterScript(121));
-// { name: 'Latin', ...}
-
-/*
-some() is another higher-order function
-    - takes a test function and tells you whether that function returns true for ANY of the elements in the array
-
-
-* How do we get the character codes in a string?
-    Recall that JS strings are encoded as a sequence of 16 bit numbers - these are called "code units"
-    
-    * UTF-16
-        - format used by JS strings
-        - describes most common characters using a single 16-bit code unit but uses a pair of 2 such units for others 
-
-
-Emojis
-    - obvious operations on JS strings like retrieving their LENGTH via .length() and accessing their content using SQUARE BRACKET/[] deal ONLY with code units
-*/
-
-
-// Two emoji characters, horse and shoe
-let horseShoe = "🐴👟";
-console.log(horseShoe.length);
-// → 4
-console.log(horseShoe[0]);
-// → � (Invalid half-character)
-console.log(horseShoe.charCodeAt(0));
-// → 55357 (Code of the half-character)
-console.log(horseShoe.codePointAt(0));
-// → 128052 (Actual code for horse emoji)
-
-
-/*
-Unicode String Methods:
-
-String.charCodeAt()
-    - returns a code unit, NOT a FULL character code
-String.codePointAt()
-    - returns a FULL unicode character
-
-* 'for/of' loop can also be used on strings
-* when you use it loop over a string, it gives you REAL characters, NOT code units
-*/
-
-
-let roseDragon = "🌹🐉";
-for (let char of roseDragon) {
-    console.log(char);
-}
-// 🌹
-// 🐉
-
-let word = "hello";
-for (let letter of word) {
-    console.log(letter);
-}
-// h
-// e
-// l
-// l
-// o
-
-
-/*
-Recognizing Text
-
-
-What we have so far (for/of):
-    1. characterScript() - finds which code belongs to which type of script
-    2. function a way to loop over characters in a string
-
-The next step is to COUNT the characters that belong to each script
-*/
-
 
 function countBy(items, groupName) {
     let counts = [];
@@ -1484,70 +1156,15 @@ function countBy(items, groupName) {
     return counts;
 }
 
-console.log(countBy([1, 2, 3, 4, 5], n => n > 2));
-// [ { name: false, count: 2 }, { name: true, count: 3 } ]
 
 
-/*
-Step by Step
-    1. 1 --> name = false --> known == -1 (not in list yet) --> pushes to count {name: false, count: 1}
-    2. 2 --> name = false --> known == 0 (index 0 of the list is name 'false') --> increment counter
-    3. 3 --> name = true --> known == -1 ({name: true...}) NOT in list --> pushes to count {name: true, count: 1}
-    4. 4 --> name = true --> known == 1 (index 1 of count list is name 'true') --> increment counter by 1
-    5. 5 --> name = true --> known == 1 (index 1 of count list is name 'true') --> increment counter by 1
+function dominantDirection(text) {
+    // find which script is the dominant/majority
 
+    // then find the char point of that scripts
 
-The countBy() expects a COLLECTION (anything we can loop over with 'for/of') and a FUNCTION that computes a group name for a given element
-    - 'groupName' function returns an array of objects, each of which names a group and tells you the number of elements that were found in that group
-
-.findIndex(<function>) [array method] 
-    * somewhat like indexOf() but INSTEAD of looking for a specific value, it finds the FIRST value for which the given FUNCTION returns true
-    * returns -1 when NO such element is found
-*/
-
-
-// .findIndex() 
-console.log([1,2,1,3,4].findIndex(n => n > 1));
-// .indexOf()
-console.log([1,2,1,3,4].indexOf(2));
-
-
-/*
-Using 'countBy()' we can write the function that tells us which scripts are used in a piece of text
-
-Ternary Operator:
-    true ? x : y --> returns x
-    false ? x : y --> returns y
-
-{name}
-    returns the {name} value
-*/
-
-
-function textScripts(text) {
-    let scripts = countBy(text, char => {
-        let script = characterScript(char.codePointAt(0));
-        return script ? script.name : "none";
-    }).filter(({name}) => name != "none");
-    
-    let total = scripts.reduce((n, {count}) => n + count, 0);
-    if (total == 0) return "No scripts found";
-
-    return scripts.map(({name, count}) => {
-        return `${Math.round(count * 100 / total)}% ${name}`;
-    }).join(", ");
+    // then look at that scripts' direction property
 }
 
-console.log(textScripts('英国的狗说"woof", 俄罗斯的狗说"тяв"'));
-// 61% Han, 22% Latin, 17% Cyrillic
-
-
-/*
-The function first counts the characters by name, using 'characterScript()' to assign them a name and falling back to string "none" for characters that aren't part of any script
-
-The .filter() call drops the entry for "none" from the resulting array since we aren't interested in those characters
-
-To be able to compute percentages, we first need the total number of characters that belong to a script, which we can compute with 'reduce'
-
-If no such characters are found, the function returns a specific string. Otherwise, it transforms the counting entries into readable strings with .map() and then combines them with .join()
-*/
+console.log(dominantDirection("Hey, مساء الخير"));
+// → rtl
