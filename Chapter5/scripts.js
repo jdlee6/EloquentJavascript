@@ -1236,9 +1236,12 @@ function characterCount(script) {
     }, 0);
 }
 
-console.log(SCRIPTS.reduce((accumulator, currentValue) => {
+let text = SCRIPTS[0]
+console.log(characterCount(text))
+
+console.log(SCRIPTS.reduce((a, b) => {
     // console.log(characterCount(accumulator), characterCount(currentValue));
-    return characterCount(accumulator) < characterCount(currentValue) ? currentValue : accumulator;
+    return characterCount(a) < characterCount(b) ? currentValue : accumulator;
 }));
 
 
@@ -1551,3 +1554,4 @@ To be able to compute percentages, we first need the total number of characters 
 
 If no such characters are found, the function returns a specific string. Otherwise, it transforms the counting entries into readable strings with .map() and then combines them with .join()
 */
+// console.log(SCRIPTS.filter(s => s.living).map(s => s.name))
