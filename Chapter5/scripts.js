@@ -1239,10 +1239,10 @@ function characterCount(script) {
 let text = SCRIPTS[0]
 console.log(characterCount(text))
 
-console.log(SCRIPTS.reduce((a, b) => {
-    // console.log(characterCount(accumulator), characterCount(currentValue));
-    return characterCount(a) < characterCount(b) ? currentValue : accumulator;
-}));
+// console.log(SCRIPTS.reduce((a, b) => {
+//     // console.log(characterCount(accumulator), characterCount(currentValue));
+//     return characterCount(a) < characterCount(b) ? currentValue : accumulator;
+// }));
 
 
 /*
@@ -1523,7 +1523,7 @@ Ternary Operator:
     false ? x : y --> returns y
 
 {name}
-    returns the {name} value
+    refers to the {name} value
 */
 
 
