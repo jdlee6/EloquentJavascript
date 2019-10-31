@@ -614,7 +614,7 @@ class MatrixIterator {
 
 
 /*
-The class tracks the progress of iterating over a matrix in its x and y properties
+The class tracks the progress of iterating over a matrix in its x and y 
     * the 'next' method starts by checking whether the bottom of the matrix has been reached (y == matrix.height) 
 
     * if y != matrix.height, it 1st CREATES the object holding the current value and then updates its position, moving to the next row if necessary
