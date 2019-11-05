@@ -299,3 +299,83 @@ function routeRobot(state, memory) {
     }
     return {direction: memory[0], memory: memory.slice(1)};
 }
+
+
+/* 
+Pathfinding
+
+Efficient method:
+    1. Be able to deliberately move towards a given parcel or toward the location where a parcel has to be delivered
+    * doing that, even when the goal is more than 1 move away will REQUIRE some kind of route finding function
+
+* The problem of finding a route through a graph is a typical search problem
+    - we can tell whether a given solution (a route) is a valid solution but we can't directly compute the solution the way we could for 2 + 2
+        * INSTEAD, we have to keep creating potential solutions until we find one that works
+
+The number of possible routes through a graph is infinite
+    * BUT when searching for a route from A to B, we are only interested in the ones that start at A 
+        - and routes that visit the SAME place TWICE are INEFFICIENT
+
+What we want is the SHORTEST ROUTE
+    - make sure we look at SHORT routes BEFORE we look at LONGER ones
+    - a good approach would be to "grow" routes from the STARTING point
+        * explore each reachable place that has NOT been visited yet until a route reaches the goal
+        
+        * this way, we'll only explore routes that are potentially interesting and we'll find the SHORTEST route to the goal
+*/
+
+
+function findRoute(graph, from, to) {
+    let work = [{at: from, route: []}];
+    for (let i = 0; i < work.length; i++) {
+        let {at, route} = work[i];
+        for (let place of graph[at]) {
+            if (place == to) return route.concat(place);
+            if (!work.some(w => w.at == place)) {
+                work.push({at: place, route: route.concat(place)})
+            }
+        }
+    }
+}
+
+
+/*
+The exploring has to be done in the right order, the places that were reached first have to be EXPLORED first
+    1. function keeps a 'work' list 
+        - an array of places that should be explored next, along with the route that got us there
+            * starts at START position aka 'from' and has an EMPTY route
+
+    2. the search begins by taking the next item in the list and exploring that, which means all roads from that place are LOOKED at
+        - if 1 of them is the goal, a finished route can be returned
+        - otherwise, if we haven't look at this place before, a new item is added to the list
+        * if we have looked at it before, since we are looking at SHORT routes first, we've found either a longer route to that place or 1 precisely as long as the existing one and we DON't need to explore it
+
+* Picture a web of known routes from the START location, growing evenly on all sides
+    * as soon as the 1st thread reaches the GOAL, that thread is traced BACK to the start --> gives us our route
+
+* Background info:
+    - we know that the graph is connected, meaning that every location can be reached from all other locations
+*/
+
+
+function goalOrientedRobot({place, parcels}, route) {
+    if (route.length == 0) {
+        let parcel = parcels[0];
+        if (parcel.place != place) {
+            route = findRoute(roadGraph, place, parcel.place);
+        } else {
+            route = findRoute(roadGraph, place, parcel.address);
+        }
+    }
+    return {direction: route[0], memory: route.slice(1)};
+}
+    
+
+/*
+The robot uses its memory value as a LIST of directions to move in
+    * when the list is EMPTY, it has to figure out what to do NEXT
+    - takes the 1st undelivered parcel in the set and if that parcel hasn't been picked up yet, plots a route toward it
+    - if that parcel has been picked up, it still needs to be delivered so that robot creates a route toward the delivery address instead
+*/
+
+
