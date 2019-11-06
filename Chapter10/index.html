@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+</body>
+    <!-- Example 1
+    <script type="module">
+        // import {sayHi} from './sayHi.js';
+        // document.body.innerHTML = sayHi("Joe");
+    </script> -->
+
+    <!-- Example 2
+    <script type="module" src="hello.js"></script> -->
+
+    <!-- Example 3
+    <script type="module">
+        // The variable is only visible in this module script
+        let user = "John";
+    </script>
+    
+    <script type="module">
+        alert(user); // Error: user is not defined
+    </script> -->
+
+    <!-- Example 4
+    <script type="module" src="alert.js"></script>
+    <script type="module" src="alert.js"></script> -->
+
+    <!-- Example 6
+    <script type="module" src="admin.js"></script>
+    <script type="module" src="init.js"></script>
+    <script type="module" src="other.js"></script> -->
+
+    <!-- <script type="module">
+        alert(import.meta.url);
+    </script> -->
+
+    <!-- <script>
+        alert(this); // object window
+    </script>
+
+    <script type="module">
+        alert(this); // undefined
+    </script> -->
+</html>
