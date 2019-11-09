@@ -47,4 +47,51 @@
     <script type="module">
         alert(this); // undefined
     </script> -->
+
+    <!-- <script type="module">
+        import {sayHi} from "./export_ex2.js";
+        sayHi("joe");
+    </script> -->
+
+    <!-- <script type="module">
+        import * as say from "./export_ex2.js";
+        say.sayHi("joe");
+    </script> -->
+
+
+    <!-- <script type="module">
+        import {sayHi as hi, sayBye as bye} from './export_ex2.js';
+        hi('Joe');
+    </script> -->
+
+
+    <!-- <script type="module">
+        import {hi, bye} from './export_ex4.js';
+        hi('Joe');
+        bye('Joe');
+    </script> -->
+    
+    <!-- 
+    <script type="module">
+        import User from './export_default_ex.js'; // not {User}
+        new User('John');
+    </script> -->
+
+
+    <!-- <script type="module">
+        import {default as User, sayHi} from './export_default_ex3.js';
+
+        let a = new User('John');
+        sayHi(a.name);
+    </script> -->
+
+    <!-- <script type="module">
+        import * as user from './export_default_ex3.js';
+
+        let User = user.default; // 'default' export
+        new User('John');
+    </script> -->
+
+
+    
 </html>
