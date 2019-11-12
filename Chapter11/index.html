@@ -106,5 +106,104 @@
         promise.then(script => alert(`Another handler...`));
         promise.then(script => alert(`Newest Alert`));
     </script> -->
+
+    <!-- Promise Chaining
+    <script>
+        new Promise(function(resolve, reject) {
+
+        setTimeout(() => resolve(1), 1000); // (*)
+
+        }).then(function(result) { // (**)
+
+        alert(result); // 1
+        return result * 2;
+
+        }).then(function(result) {// (***)
+
+        alert(result); // 2
+        return result * 2;
+
+        }).then(function(result) {
+
+        alert(result); // 4
+        return result * 2;
+
+        });
+    </script> -->
+
+    <!-- <script>
+        let promise = new Promise(function(resolve, reject) {
+            setTimeout(() => resolve(1), 1000);
+        });
+
+        promise.then(function(result) {
+            alert(result);
+            return result * 2;
+        });
+
+        promise.then(function(result) {
+            alert(result);
+            return result * 2;
+        });
+
+        promise.then(function(result) {
+            alert(result);
+            return result * 2;
+        });
+    </script> -->
+
+    <!-- <script>
+        new Promise(function(resolve, reject) {
+
+            setTimeout(() => resolve(1), 1000);
+
+        }).then(function(result) {
+
+            alert(result); // 1
+
+            return new Promise((resolve, reject) => {
+            setTimeout(() => resolve(result*2), 1000);
+        });
+
+        }).then(function(result) { // (**)
+
+            alert(result); // 2
+
+            return new Promise((resolve, reject) => {
+            setTimeout(() => resolve(result * 2), 1000);
+        });
+
+        }).then(function(result) {
+
+            alert(result); // 4
+
+        });
+    </script> -->
+
+    <!-- <script type="module">
+        class Thenable {
+            constructor(num) {
+                this.num = num;
+            }
+
+            then(resolve, reject) {
+                alert(resolve);
+                setTimeout(() => resolve(this.num * 2), 1000); // (**)
+            }
+        }
+
+        new Promise(resolve => resolve(1))
+            .then(result => {
+                return new Thenable(result); // (*)
+            })
+            .then(alert); // shows 2 after 1000 ms
+    </script> -->
+
+    <script>
+        fetch('https://api.github.com/repos/javascript-tutorial/en.javascript.info/commits')
+            .then(response => response.json())
+            .then(commits => alert(commits[0].author.login));
+    </script>
+
 </body>
 </html>

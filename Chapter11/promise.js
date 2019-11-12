@@ -312,6 +312,7 @@ Example:
         }
 */
 
+
 function loadScript(src) {
     return new Promise(function(resolve, reject) {
         let script = document.createElement('script');
