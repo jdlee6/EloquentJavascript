@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <!-- <script>
+        function loadScript(src, callback) {
+            let script = document.createElement('script');
+            script.src = src;
+            script.onload = () => callback(script);
+            document.head.append(script);
+        }
+
+        loadScript('https://cdnjs.cloudflare.com/ajax/libs/lodash.js/3.2.0/lodash.js', script => {
+            alert(`Cool, the script ${script.src} is loaded`);
+            alert( _ ); // function declared in the loaded script
+        });    
+    </script> -->
+
+    <!-- <script> 
+        let promise = new Promise(function(resolve, reject) {
+            setTimeout(() => resolve("done!"), 1000);
+        });
+        
+        // resolve runs the first function in .then
+        promise.then(
+            result => alert(result), //shows "done!" after 1 seconds
+            error => alert(error) // this is IGNORED
+        );
+    </script> -->
+
+
+    <!-- <script>
+        let promise = new Promise(function(resolve, reject) {
+        setTimeout(() => reject(new Error("Whoops!")), 1000);
+    })
+
+    promise.then(
+        result => alert(result), // this is IGNORED
+        error => alert(error) // shows "Error: Whoops!" after 1 second
+    );
+    </script> -->
+
+    <!-- <script>
+        let promise = new Promise(resolve => {
+            setTimeout(() => resolve("Done!"), 1000);
+        });
+
+        promise.then(alert); // shows "Done!" after 1 second
+    </script> -->
+
+    <!-- <script>
+        let promise = new Promise((resolve, reject) => {
+            setTimeout(() => reject(new Error("Whoops!")), 1000);
+        });
+
+        // .catch(f) is the SAME as promise.then(null, f)
+        promise.catch(alert); // Shows "Error: Whoops!" after 1 second
+    </script> -->
+
+    <!-- <script>
+        let promise = new Promise((resolve, reject) => {
+            setTimeout(() => resolve("result"), 2000)
+        })
+            .finally(() => alert("promise ready!"))
+            .then(result => alert(result)); // .then handles the result
+    </script> -->
+
+    <!-- <script>
+        let promise = new Promise((resolve, reject) => {
+        throw new Error("error");
+    })
+            .finally(() => alert("Promise ready!"))
+            .catch(err => alert(err)); // .catch handles the error object
+    </script> -->
+
+    <!-- <script>
+        let promise = new Promise(resolve => resolve("Done!"));
+        promise.then(alert);
+    </script> -->
+
+    <!-- <script>
+        function loadScript(src) {
+            return new Promise(function(resolve, reject) {
+                let script = document.createElement('script');
+                script.src = src;
+
+                script.onload = () => resolve(script);
+                script.onerror = () => reject(new Error(`Script load error for ${script.src}`))
+
+                document.head.append(script);
+            });
+        }
+
+        // usage
+        let promise = loadScript("https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.11/lodash.js");
+        
+        promise.then(
+            script => alert(`${script.src} is loaded!`),
+            error => alert(`Error: ${error.message}`)
+        );
+        promise.then(script => alert(`Another handler...`));
+        promise.then(script => alert(`Newest Alert`));
+    </script> -->
+</body>
+</html>
